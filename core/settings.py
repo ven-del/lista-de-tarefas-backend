@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@l0#$bi!2rp$4(!2w+@ih!sb^tp4q0lf#c(djpgq7)9#h*4&ni'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-@l0#$bi!2rp$4(!2w+@ih!sb^tp4q0lf#c(djpgq7)9#h*4&ni')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '.onrender.com']
 
 
 # Application definition
@@ -93,6 +94,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -132,6 +134,11 @@ DATABASES = {
     }
 }
 
+# Use PostgreSQL in production
+if 'DATABASE_URL' in os.environ:
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.parse(os.environ.get('DATABASE_URL'))
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -167,7 +174,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# WhiteNoise configuration
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -205,8 +216,15 @@ CORS_ALLOW_METHODS = [
     'PUT',
 ]
 
-# Isso aqui é poder demais pra deixar descomentado. 
-CORS_ALLOW_ALL_ORIGINS = True  
+# Apenas para desenvolvimento - desabilite em produção
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    # Adicione aqui a URL do seu frontend em produção
+    CORS_ALLOWED_ORIGINS.extend([
+        # "https://sua-app-frontend.vercel.app",
+        # "https://seu-dominio.com",
+    ])
 
 # Preflight cache (tempo que o browser guarda as opções de CORS)
 CORS_PREFLIGHT_MAX_AGE = 86400
