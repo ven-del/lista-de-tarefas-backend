@@ -191,7 +191,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:5173", 
     "http://localhost:3000", 
     "http://127.0.0.1:3000", 
-    "https://labce-lista-dinamica.vercel.app/",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -221,10 +220,8 @@ CORS_ALLOW_METHODS = [
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
-    # Adicione aqui a URL do seu frontend em produção
     CORS_ALLOWED_ORIGINS.extend([
-        # "https://sua-app-frontend.vercel.app",
-        # "https://seu-dominio.com",
+        "https://labce-lista-dinamica.vercel.app/"
     ])
 
 # Preflight cache (tempo que o browser guarda as opções de CORS)
