@@ -221,7 +221,7 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
     CORS_ALLOWED_ORIGINS.extend([
-        "https://labce-lista-dinamica.vercel.app/"
+        "https://labce-lista-dinamica.vercel.app"
     ])
 
 # Preflight cache (tempo que o browser guarda as opções de CORS)
