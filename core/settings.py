@@ -206,7 +206,7 @@ CORS_ALLOW_METHODS = [
 ]
 
 # Isso aqui é poder demais pra deixar descomentado. 
-# CORS_ALLOW_ALL_ORIGINS = True  
+CORS_ALLOW_ALL_ORIGINS = True  
 
 # Preflight cache (tempo que o browser guarda as opções de CORS)
 CORS_PREFLIGHT_MAX_AGE = 86400
